@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+  <title>GUZMAN</title>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-3">
+        <input type="text" id="name" placeholder="Ingresa su Nombre" class="form-control my-2" />
+        <input type="text" id="group" placeholder="Ingresa su Grupo" class="form-control my-2" />
+        <input type="text" id="matrix" placeholder="Ingresa su Matricula" class="form-control my-2" />
+        <input type="text" id="resultado" placeholder="Ingresa su Calificacion" class="form-control my-2" />
+        <label for="">Seleccione Sexo</label>
+        <select id="sexo" class="form-control my-2" value="hola">
+          <option value="">Seleccione</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+        </select><br />
+        <button class="btn btn-success" type="reset" onclick="registrar()">
+          Registrar
+        </button>
+      </div>
+      <div class="col" style="text-align-last:center">
+        <h3><label for="">Menu</label></h3>
+        <div class="col" style="text-align-last:center">
+          <select class="form-control" id="opcion">
+            <option value="0">Seleccione una opcion</option>
+            <option value="1">Mostrar la Cantidad de alumnos</option>
+            <option value="2">Mostrar la Cantidad de alumnos por sexo</option>
+            <option value="3">Mostrar la Media Calificaciones</option>
+            <option value="4">Buscar Alumno por matricula</option>
+            <option value="5">Conjunto de alumnos</option>
+            <option value="6">Mostrar grupo</option>
+          </select><br>
+          <button class="btn btn-success" type="reset" onclick="menu()">Listo</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-1">
+        <table class="table" id="tabla">
+          <thead class="thead-inverse">
+            <tr>
+              <th>Nombre</th>
+              <th>Grupo</th>
+              <th>Matricula</th>
+              <th>Sexo</th>
+              <th>Calificacion</th>
+            </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+  function registrar() {
+    function alumno(nombre, grupo, matricula, sexo, calificacion) {
+      this.nombre = nombre;
+      this.grupo = grupo;
+      this.matricula = matricula;
+      this.sexo = sexo;
+      this.calificacion = calificacion;
+    }
+    var nombres = document.getElementById("name").value;
+    var matriculas = document.getElementById("matrix").value;
+    var sexos = document.getElementById("sexo").value;
+    var calificacions = document.getElementById("resultado").value;
+    var grupos = document.getElementById("group").value;
+
+    datos = new alumno(nombres, grupos, matriculas, sexos, calificacions);
+    agregar();
+
+  }
+  var arregloAlumnos = [];
+  var grupos = [];
+  function agregar() {
+    arregloAlumnos.push(datos);
+    let existe = false;
+    for (let i = 0; i < grupos.length; i++) {
+      if (grupos[i] == document.getElementById("group").value) {
+        existe = true;
+      }
+    }
+    if (existe == false) {
+      grupos.push(document.getElementById("group").value);
+    }
+
+    document.getElementById("tabla").innerHTML +=
+      "<tbody><td>" +
+      datos.nombre +
+      "</td><td>" +
+      datos.grupo +
+      "</td><td>" +
+      datos.matricula +
+      "</td><td>" +
+      datos.sexo +
+      "</td><td>" +
+      datos.calificacion +
+      "</td></tbody>";
+  }
+  function menu() {
+    let opc = document.getElementById("opcion").value
+
+    switch (opc) {
+      case "1":
+        sumarAlumnos(arregloAlumnos);
+        break;
+      case "2":
+        sumarGeneros(arregloAlumnos)
+        break;
+      case "3":
+        mediaCalificaciones(arregloAlumnos);
+        break;
+      case "4":
+        let matricula = prompt("Ingrese la matricula del alumno");
+        for (let i = 0; i < arregloAlumnos.length; i++) {
+          if (arregloAlumnos[i].matricula == matricula) {
+            alert("Nombre: " + arregloAlumnos[i].nombre + "\nMatricula: " + arregloAlumnos[i].matricula + "\nCalificacion: " + arregloAlumnos[i].calificacion + "\nSexo: " + arregloAlumnos[i].sexo + "\nGrupo: " + arregloAlumnos[i].grupo);
+          }
+        }
+        break;
+      case "5":
+        let conjunto = [];
+        let nAlumnos = prompt("Ingrese la cantidad de alumnos");
+        for (let i = 0; i < nAlumnos; i++) {
+          let matricula = prompt("Ingrese la matricula del alumno");
+          for (let j = 0; j < arregloAlumnos.length; j++) {
+            if (arregloAlumnos[j].matricula == matricula) {
+              conjunto.push(arregloAlumnos[j]);
+            }
+          }
+        }
+        sumarAlumnos(conjunto);
+        sumarGeneros(conjunto);
+        mediaCalificaciones(conjunto);
+        break;
+      case "6":
+        mostrarGrupo(arregloAlumnos);
+        break;
+    }
+    function sumarAlumnos(elementos) {
+      let cantidad = elementos.length;
+      alert("Cantidad de alumnos: " + cantidad);
+    }
+
+    function sumarGeneros(elementos) {
+      let cantidadM = 0;
+      let cantidadF = 0;
+      for (let i = 0; i < elementos.length; i++) {
+        if (elementos[i].sexo == "Masculino") {
+          cantidadM++;
+        } else {
+          cantidadF++;
+        }
+      }
+      alert("Cantidad de alumnos masculinos: " + cantidadM + "\nCantidad de alumnos femeninos: " + cantidadF);
+    }
+
+    function mediaCalificaciones(elementos) {
+      let suma = 0;
+      for (let i = 0; i < elementos.length; i++) {
+        suma += parseInt(elementos[i].calificacion);
+      }
+      alert("Media de calificaciones: " + suma / elementos.length);
+    }
+
+    function mostrarGrupo(elementos) {
+      let gruposActuales = "";
+      for (let i = 0; i < grupos.length; i++) {
+        gruposActuales += grupos[i] + "\n";
+      }
+      alert("Grupos actuales: \n" + gruposActuales);
+      var eleccion = prompt("Ingrese el grupo que desea mostrar");
+      let grupo = [];
+      for (let i = 0; i < elementos.length; i++) {
+        if (elementos[i].grupo == eleccion) {
+          grupo.push(elementos[i]);
+        }
+      }
+      for (let i = 0; i < grupo.length; i++) {
+        alert("Nombre: " + grupo[i].nombre + "\nMatricula: " + grupo[i].matricula + "\nCalificacion: " + grupo[i].calificacion + "\nSexo: " + grupo[i].sexo + "\nGrupo: " + grupo[i].grupo);
+      }
+    }
+
+  }
+</script>
+
+</html>
